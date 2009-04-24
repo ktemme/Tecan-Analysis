@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Plot your fancy</title>
+    <link href="layout.css" rel="stylesheet" type="text/css"></link>
+    <!--[if IE]><script language="javascript" type="text/javascript" src="../excanvas.pack.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="../jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="../jquery.flot.js"></script>
+    <script id="source" language="javascript" type="text/javascript">
+$(function () {
+    // setup plot
+    function sampleFunction(x1, x2, func) {
+        var d = [ ];
+        var step = (x2-x1)/300;
+        for (var i = x1; i < x2; i += step )
+            d.push([i, func( i ) ]);
+
+        return d;
+    }
+
+    var random_data = [ ];
+    for (var i = 0; i < 300 ; i++ ) {
+        random_data.push( [ Math.random()*Math.exp(i/50), Math.random()*1e6 ] );
+    }
+
+    var random_data2 = [ ];
+    for (var i = 0; i < 300 ; i++ ) {
+        random_data2.push( [ i, Math.random()*1e6 ] );
+    }
+
+    var options1 = {
+        crosshair: { mode: "xy", color: "#ff0000" },
+        lines: { show: true  },
+        xaxis: { ticks: 4 },
+        yaxis: { ticks: 4, base:  10 , tickDecimals: 3 },
+        selection: { mode: "xy" },
+        grid: { hoverable: true, clickable: true , color: "#999"}
+    };
+
+    var options2 = {
+        crosshair: { mode: "xy", color: "#ff0000" },
+        lines: { show: true  },
+        xaxis: { ticks: 4 },
+        yaxis: { ticks: 4, base:  Math.exp(1),  tickDecimals: 2},
+        selection: { mode: "xy" },
+        grid: { hoverable: true, clickable: true , color: "#999"}
+    };
+
+    var options3 = {
+        crosshair: { mode: "xy", color: "#ff0000" },
+        legend: { show: false },
+        lines: { show: false  },
+        points: { show: true },
+        xaxis: { ticks: 6, base: 10, tickDecimals: 0  },
+        yaxis: { ticks: 6, base:  10 , tickDecimals: 0 },
+        selection: { mode: "xy" },
+        grid: { hoverable: true, clickable: true , color: "#999"}
+    };
+    var options4 = {
+        crosshair: { mode: "xy", color: "#ff0000" },
+        legend: { show: false },
+        lines: { show: false  },
+        points: { show: true },
+        xaxis: { ticks: 4 },
+        yaxis: { ticks: 4, base:  10 , tickDecimals: 3 },
+        selection: { mode: "xy" },
+        grid: { hoverable: true, clickable: true , color: "#999"}
+    };
+
+    var data1 = sampleFunction( 0, 5, function(x){ return Math.exp(x)*Math.sin(x)*Math.sin(x) } );
+    var data2 = sampleFunction( 0, 5, function(x){ return Math.exp(x)                         } );
+
+    var plot1 = $.plot($("#chart1"),  [ { label: "exp(x)sin(x)^2", data: data1       } ], options1);
+    var plot2 = $.plot($("#chart2"),  [ { label: "exp(x)",         data: data2       } ], options2);
+    var plot3 = $.plot($("#chart3"),  [ { label: "random data",    data: random_data } ], options3);
+    var plot4 = $.plot($("#chart4"),  [ { label: "random data",    data: random_data2 } ], options4);
+
+});
+
+    </script>
+ </head>
+    <body>
+    <h1>Logarithmic Plot</h1>
+
+    <div style="float:left">
+      <div id="chart1" style="width:400px;height:300px"></div>
+      This is an example of a function shown with a normal x-axis<br/>
+    and logarithmic y-axis with base 10. 
+    </div>
+
+    <div style="float:right">
+      <div id="chart2" style="width:400px;height:300px"></div>
+      This is an example of the exponential function shown with a normal x-axis<br/>
+    and logarithmic y-axis with base e. 
+    </div>
+
+    <div style="float:left">
+      <div id="chart3" style="width:400px;height:300px"></div>
+      This is an example of some random data with both axes in base 10.
+    </div>
+
+    <div style="float:right">
+      <div id="chart4" style="width:400px;height:300px"></div>
+      This is some random data with only the y-axis in base 10.
+    </div>
+
+ </body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Analysis of your file</title>
+    <link href="flot/examples/layout.css" rel="stylesheet" type="text/css"></link>
+    <!--[if IE]><script language="javascript" type="text/javascript" src="flot/excanvas.pack.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="flot/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="flot/jquery.flot.js"></script>
+    <script language="javascript">
+		function d2h(d) {return d.toString(16);}
+	</script>
+ </head>
+ <body>
+	<div id="naming"></div>
+	<div id="fluorescence">
+		<div><h2>Fluorescence vs Time</h2></div>
+		<div id="rfu" style="width:600px;height:300px;"></div>
+	</div>
+	<div id="density">
+		<div><h2>OD vs Time</h2></div>
+		<div id="od" style="width:600px;height:300px;"></div>
+	</div>
+	<div id="normalization">
+		<div><h2>Fluorescence/OD vs Time</h2></div>
+		<div id="normalized" style="width:600px;height:300px;"></div>
+	</div>
+	
+	<script id="source" language="javascript" type="text/javascript">
+		$(function () {
+  			var options1 = {
+      			xaxis: { ticks: 6 },
+      			yaxis: { ticks: 3, base:  10 , tickDecimals: 0, max: 6 },
+      			selection: { mode: "xy" },
+  			};
+
+  			var options2 = {
+      			xaxis: { ticks: 6 },
+      			yaxis: { ticks: 3, max: 1 }
+  			};
+
+			<% js_fluorescence[:data].each_with_index do |x, key| %>
+				var r<%= key + 1 %> = <%= x %>;
+			<% end %>
+			
+			<% js_od[:data].each_with_index do |x, key| %>
+				var o<%= key + 1 %> = <%= x %>;
+			<% end %>
+			
+			<% js_norm[:data].each_with_index do |x, key| %>
+				var n<%= key + 1 %> = <%= x %>;
+			<% end %>
+			
+
+			var plot = $.plot($("#rfu"), [ <%= js_fluorescence[:ids] %> ], options1);
+			$.plot($("#od"), [ <%= js_od[:ids] %> ], options2 );
+			$.plot($("#normalized"), [ <%= js_norm[:ids] %> ], options1);
+			
+
+			// This section gives us a color coded legend.
+			var series = plot.getData();
+			for (var i = 0; i < series.length; ++i)
+			{
+			    $("#naming").append("<div id='naming-"+i+"'>"+i+": "+series[i].color+"</div>");
+				$("#naming-"+i).css({
+					// 'background-color': "red"
+					'background-color': series[i].color
+				});
+			}
+  		});
+
+  	</script>
+
+  </body>
+</html>

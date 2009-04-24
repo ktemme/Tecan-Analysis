@@ -1,0 +1,21 @@
+<html>
+<head>
+</head>
+<body>
+	<form action="/analyze" enctype="multipart/form-data" method="post">
+		<p>Choose an ASCII file of Tecan data:</p>
+		<p><input type="file" name="datafile" size="40"></p>
+		<p>Which sample was white cells?<input type="text" name="white"></p>
+		<p>Which is the max timepoint?<input type="text" name="timepoint"></p>
+		<input type="submit" value="Analyze">
+	</form>
+	
+	<form action="/rena" enctype="multipart/form-data" method="post">
+		<p>Rena's data: Choose an ASCII file of Tecan data:</p>
+		<p><input type="file" name="datafile" size="40"></p>
+		<p>Which sample was white cells?<input type="text" name="white"></p>
+		<p>Which is the max timepoint?<input type="text" name="timepoint"></p>
+		<p>RFP or GFP?<input type="text" name="fp"></p>
+		<input type="submit" value="Analyze">
+	</form>
+</body>
