@@ -55,7 +55,7 @@ def analyze_rena_data(file,options)
   if options[:fp] == ""
     options[:fp] = 'rfp'
   end
-  options[:layout] = [[14,27,40],[  15,28,41],[  16,29,42],[  17,30,43],[  18,31,44],[  19,32,45],[  20,33,46],[  21,34,47],[  22,35,38],[  23,26,39],[  50,63,76],[  51,64,77],[  52,65,78],[  53,66,79],[  54,67,80],[  55,68,81],[  56,69,82],[  57,70,83],[  58,71,59]]  
+  options[:layout] ||= [[14,27,40],[  15,28,41],[  16,29,42],[  17,30,43],[  18,31,44],[  19,32,45],[  20,33,46],[  21,34,47],[  22,35,38],[  23,26,39],[  50,63,76],[  51,64,77],[  52,65,78],[  53,66,79],[  54,67,80],[  55,68,81],[  56,69,82],[  57,70,83],[  58,71,59]]  
 
   rangeOperator = 'include'
   range = 1..15
@@ -117,6 +117,13 @@ def analyze_rena_data(file,options)
   js_fluorescence = convert_hash_to_js(rfu_subtracted_white,'r')
   js_od = convert_hash_to_js(averageOD,'o')
   js_norm = convert_hash_to_js(normalized_after_white,'n')
+  js_iptg = convert_hash_to_js(norm_rfu_by_iptg,'i')
+
+
+  # p js_fluorescence
+  # p js_od
+  # p js_norm
+  # p js_iptg
 
   # Grab our ERB template
   template = ERB.new(IO.readlines("templates/rfu.rhtml").to_s)

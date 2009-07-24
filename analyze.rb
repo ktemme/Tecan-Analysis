@@ -51,7 +51,8 @@ def analyze_data(file,options)
 
   options[:white] ||= 0
   options[:time] ||= 0
-  options[:layout] = [[14,27,40,53],[15,28,41,54],[16,29,42,55],[17,30,43,56],[18,31,44,57],[19,32,45,58],[20,33,46,59],[21,34,47,50],[22,35,38,51],[23,26,39,52],[62,75,64,77],[74,63,76,65],[66,79,68,81],[78,67,80,69],[70,71,82,83]]
+  options[:layout] ||= [[14,27,40,53],[15,28,41,54],[16,29,42,55],[17,30,43,56],[18,31,44,57],[19,32,45,58],[20,33,46,59],[21,34,47,50],[22,35,38,51],[23,26,39,52],[62,75,64,77],[74,63,76,65],[66,79,68,81],[78,67,80,69],[70,71,82,83]]
+  # options[:layout] = [[14,27,40,53],[15,28,41,54],[16,29,42,55],[17,30,43,56],[18,31,44,57],[19,33,46,59],[20,32,45,58],[21,34,47,50],[22,35,38,51],[23,26,39,52],[62,75,64,77],[74,63,76,65],[66,79,68,81],[78,67,80,69],[70,71,82,83]]
   
   rangeOperator = 'include'
   range = 1..15
@@ -98,7 +99,7 @@ def analyze_data(file,options)
   rfu_subtracted_white = t.subtract_white(averageRFU,options[:white])  
   normalized_after_white = t.normalize_post(rfu_subtracted_white,averageOD)
 
-  norm_rfu_by_iptg = t.timecourse_to_iptgcourse(norm_white)
+  norm_rfu_by_iptg = t.timecourse_to_iptgcourse(normalized_after_white)
   stdev_rfu_by_iptg = t.timecourse_to_iptgcourse(norm_stddev)
 
   range = 1..norm_stddev.values.size if range == 'all'
@@ -113,6 +114,8 @@ def analyze_data(file,options)
   js_fluorescence = convert_hash_to_js(rfu_subtracted_white,'r')
   js_od = convert_hash_to_js(averageOD,'o')
   js_norm = convert_hash_to_js(normalized_after_white,'n')
+  js_iptg = convert_hash_to_js(norm_rfu_by_iptg,'i')
+
 
   # Grab our ERB template
   template = ERB.new(IO.readlines("templates/rfu.rhtml").to_s)

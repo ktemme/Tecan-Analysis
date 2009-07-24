@@ -70,15 +70,22 @@ def make_hash_log(h)
   return logged_h
 end
 
+def js_equiv(values)
+  data = values.enum_with_index.map{|x,i| "[#{i+1},#{x}],"}.to_s
+  return "[" + data[0..data.size-2] + "]"
+end
+
 def convert_hash_to_js(h,name)
-  sample_names = ''
+  keys = h.keys.sort
   data = []
- 	h.each {|key,value|
-    js_equiv = value.enum_with_index.map{|x,i| "[#{i+1},#{x}],"}.to_s
-    js_equiv = "[" + js_equiv[0..js_equiv.size-2] + "]"
-    sample_names += name + key.to_s + ", " 
-    data << js_equiv
-  }
-  sample_names = sample_names[0..sample_names.size-3]
-  return {:ids => sample_names, :data => data}
+  data = keys.map{|key| js_equiv(h[key])}
+  # h.each {|key,value|
+    # js_equiv = value.enum_with_index.map{|x,i| "[#{i+1},#{x}],"}.to_s
+    # js_equiv = "[" + js_equiv[0..js_equiv.size-2] + "]"
+    # sample_names += name + key.to_s + ", " 
+    # data << js_equiv
+  # }
+  # sample_names = sample_names[0..sample_names.size-3].sort
+  
+  return {:ids => keys, :data => data}
 end

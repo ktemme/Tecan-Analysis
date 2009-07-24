@@ -13,17 +13,36 @@
  </head>
  <body>
 	<div id="naming"></div>
+	<div id="select_all" onclick="">Select All/None</div>
+	<div id="choices" style="position:fixed;top:10;left:70%;z-index:2;">Show:</div>
 	<div id="fluorescence">
 		<div><h2>Fluorescence vs Time</h2></div>
 		<div id="rfu" style="width:600px;height:300px;"></div>
 	</div>
-	<div id="density">
-		<div><h2>OD vs Time</h2></div>
-		<div id="od" style="width:600px;height:300px;"></div>
-	</div>
 	<div id="normalization">
 		<div><h2>Fluorescence/OD vs Time</h2></div>
 		<div id="normalized" style="width:600px;height:300px;"></div>
+	</div>
+		<div id="density">
+		<div><h2>OD vs Time</h2></div>
+		<div id="od" style="width:600px;height:300px;"></div>
+	</div>
+
+	<!-- <div id="iptgcurves">
+		<div><h2>Fluorescence/OD vs IPTG</h2></div>
+		<div id="iptg" style="width:600px;height:300px;"></div>
+	</div> -->
+		
+	<div id="data"><table><tr>
+		<% js_norm[:data].each_with_index do |x, key| %>
+			<tr>
+				<td><%= key + 1 %>: </td>
+				<% eval(x).each do |item| %>
+					<td><%= item.last.to_i %></td>
+				<% end %>
+			</tr>
+		<% end %>
+		</tr></table>
 	</div>
 	
 	<script id="source" language="javascript" type="text/javascript">
@@ -39,34 +58,135 @@
       			yaxis: { ticks: 3, max: 1 }
   			};
 
+			var r_datasets = {
 			<% js_fluorescence[:data].each_with_index do |x, key| %>
-				var r<%= key + 1 %> = <%= x %>;
+				"<%= key + 1 %>": {
+					data: <%= x %>
+					}
+					<%= "," unless js_fluorescence[:data].size == key+1 %>
 			<% end %>
+			};
 			
+			var o_datasets = {
 			<% js_od[:data].each_with_index do |x, key| %>
-				var o<%= key + 1 %> = <%= x %>;
+				"<%= key + 1 %>": {
+					data: <%= x %>
+					}
+					<%= "," unless js_od[:data].size == key+1 %>
 			<% end %>
+			};
 			
+			var n_datasets = {
 			<% js_norm[:data].each_with_index do |x, key| %>
-				var n<%= key + 1 %> = <%= x %>;
+				"<%= key + 1 %>": {
+					data: <%= x %>
+					}
+					<%= "," unless js_norm[:data].size == key+1 %>
 			<% end %>
+			};
 			
-
-			var plot = $.plot($("#rfu"), [ <%= js_fluorescence[:ids] %> ], options1);
-			$.plot($("#od"), [ <%= js_od[:ids] %> ], options2 );
-			$.plot($("#normalized"), [ <%= js_norm[:ids] %> ], options1);
+			var labels = {
+			<% js_norm[:data].each_with_index do |x, key| %>
+				"<%= key + 1 %>": {
+					label: "<%= key + 1 %>",
+					data: <%= x %>
+					}
+					<%= "," unless js_norm[:data].size == key+1 %>
+			<% end %>
+			};
+			
+			var i_datasets = {
+			<% js_iptg[:data].each_with_index do |x, key| %>
+				"<%= key + 1 %>": {
+					label: "<%= key + 1 %>",
+					data: <%= x %>
+					}
+					<%= "," unless js_iptg[:data].size == key+1 %>
+			<% end %>
+			};
+						
+			// var plot = $.plot($("#rfu"), [ <%= js_fluorescence[:ids] %> ], options1);
+			// $.plot($("#od"), [ <%= js_od[:ids] %> ], options2 );
+			// $.plot($("#normalized"), [ <%= js_norm[:ids] %> ], options1);
 			
 
 			// This section gives us a color coded legend.
-			var series = plot.getData();
-			for (var i = 0; i < series.length; ++i)
-			{
-			    $("#naming").append("<div id='naming-"+i+"'>"+i+": "+series[i].color+"</div>");
-				$("#naming-"+i).css({
-					// 'background-color': "red"
-					'background-color': series[i].color
-				});
-			}
+			// var series = plot.getData();
+			// for (var i = 0; i < series.length; ++i)
+			// {
+			//     $("#naming").append("<div id='naming-"+i+"'>"+i+": "+series[i].color+"</div>");
+			// 	$("#naming-"+i).css({
+			// 		// 'background-color': "red"
+			// 		'background-color': series[i].color
+			// 	});
+			// }
+			
+			// hard-code color indices to prevent them from shifting as
+		    // countries are turned on/off
+		    var i = 0;
+		    $.each(r_datasets, function(key, val) {
+		        val.color = i;
+		        ++i;
+		    });
+
+		    var i = 0;
+		    $.each(o_datasets, function(key, val) {
+		        val.color = i;
+		        ++i;
+		    });
+
+		    var i = 0;
+		    $.each(n_datasets, function(key, val) {
+		        val.color = i;
+		        ++i;
+		    });
+
+		    var i = 0;
+		    $.each(i_datasets, function(key, val) {
+		        val.color = i;
+		        ++i;
+		    });
+
+		    // insert checkboxes 
+		    var choiceContainer = $("#choices");
+		    $.each(labels, function(key, val) {
+		        choiceContainer.append('<br/><input type="checkbox" name="' + key +
+		                               '" checked="checked" >' + val.label + '</input>');
+		    });
+		    choiceContainer.find("input").click(plotAccordingToChoices);
+
+
+		    function plotAccordingToChoices() {
+		        var r_data = [];
+				var o_data = [];
+				var n_data = [];
+				var i_data = [];
+				
+		        choiceContainer.find("input:checked").each(function () {
+		            var key = $(this).attr("name");
+		            if (key && o_datasets[key])
+					{
+		                r_data.push(r_datasets[key]);
+						o_data.push(o_datasets[key]);
+						n_data.push(n_datasets[key]);
+						i_data.push(i_datasets[key]);
+					}
+		        });
+
+
+		        if (o_data.length > 0)
+				{
+		            $.plot($("#rfu"), r_data, {});
+					$.plot($("#od"), o_data, {});
+					$.plot($("#normalized"), n_data, {});
+					$.plot($("#iptg"), i_data, {});
+				}
+		    }
+
+		    plotAccordingToChoices();
+			
+			
+			
   		});
 
   	</script>
