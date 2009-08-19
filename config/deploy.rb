@@ -5,7 +5,7 @@ set :destination_dir, "/var/www/ruby/tecan"
 
 
 default_run_options[:pty] = true
-set :repository,  "git@github-assembly:ktemme/Tecan-Analysis.git"
+set :repository,  "git@github-tecan:ktemme/Tecan-Analysis.git"
 set :scm, "git"
 set :scm_username, 'ktemme'
 
