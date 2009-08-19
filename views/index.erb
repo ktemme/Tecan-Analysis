@@ -2,7 +2,7 @@
 <head>
 </head>
 <body>
-	<form action="analyze" enctype="multipart/form-data" method="post">
+	<form action='<%= url_for "/analyze" %>' enctype="multipart/form-data" method="post">
 		<p>Choose an ASCII file of Tecan data:</p>
 		<p><input type="file" name="datafile" size="40"></p>
 		<p>Which sample was white cells?<input type="text" name="white"></p>
@@ -12,7 +12,7 @@
 		<input type="submit" value="Analyze">
 	</form>
 	
-	<form action="rena" enctype="multipart/form-data" method="post">
+	<form action='<%= url_for "rena" %>' enctype="multipart/form-data" method="post">
 		<p>Rena's data: Choose an ASCII file of Tecan data:</p>
 		<p><input type="file" name="datafile" size="40"></p>
 		<p>Which sample was white cells?<input type="text" name="white"></p>

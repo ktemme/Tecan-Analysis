@@ -3,7 +3,7 @@ require 'sinatra'
 
 
 set :run, false
-set :env, :production
+set :environment, :production
 set :raise_errors, true
 set :root, File.dirname(__FILE__)
 

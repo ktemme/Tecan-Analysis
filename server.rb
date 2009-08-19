@@ -1,13 +1,14 @@
-require 'rubygems'
 require 'sinatra'
 require 'analyze'
 require 'analyze_rena_data'
+require 'sinatra/static_assets'
+
 
 before do
-  request.env['PATH_INFO'] = '/' if request.env['PATH_INFO'].empty?
+  # request.env['PATH_INFO'] = '/' if request.env['PATH_INFO'].empty?
 end
 
-get '/' do
+get '/?' do
   erb :index
 end
 
